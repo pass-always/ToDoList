@@ -21,8 +21,13 @@
           <div class="check-mark"></div>
         </div>
         <div class="new-todo-input">
-          <form onsubmit="addItem(event)">
-            <input id="todo-input" type="text" placeholder="A new TODO.." />
+          <form id="submitNew">
+            <input
+              id="todo-input"
+              type="text"
+              placeholder="A new TODO.."
+              required
+            />
           </form>
         </div>
       </div>

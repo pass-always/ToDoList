@@ -30,7 +30,7 @@ const db = getFirestore();
 const colRef = collection(db, "todo-items");
 const q = query(colRef, orderBy("createdAt", "desc"));
 
-function getItems() {
+function getItemsOld() {
   getDocs(colRef).then((snapshot) => {
     let items = [];
     snapshot.docs.forEach((doc) => {
@@ -43,7 +43,18 @@ function getItems() {
   });
 }
 
-// item.status=="completed" ? "checked"  if status==completed is true then turn to checked.
+onSnapshot(q, (snapshot) => {
+  let items = [];
+  snapshot.docs.forEach((doc) => {
+    items.push({
+      ...doc.data(),
+      id: doc.id,
+    });
+  });
+  console.log(items);
+});
+
+// item.status=="completed" ? "checked". If status==completed is true then turn to checked.
 function generateItems(items) {
   let itemsHTML = "";
   items.forEach((item) => {
@@ -90,6 +101,24 @@ function markCompleted(id) {
       }
     }
   });
+  getItems();
 }
 
-getItems();
+const newItemDiv = document.querySelector(".new-todo-input");
+function addItem(event) {
+  event.preventDefault();
+  let newItemForm = document.getElementById("submitNew");
+  let newItem = document.getElementById("todo-input");
+  addDoc(colRef, {
+    text: newItem.value,
+    status: "active",
+    createAt: serverTimestamp(),
+  }).then(() => {
+    // reset(): Use a selector that matches the form, not the wrapper. or you will have a error.
+    // newItemForm.reset();
+    window.location.reload();
+  });
+}
+newItemDiv.addEventListener("submit", addItem);
+
+getItemsOld();
